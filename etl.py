@@ -7,6 +7,18 @@ import datetime
 
 
 def process_song_file(cur, filepath):
+    
+    """
+    Description: Extract song file data and insert into songs and artists tables in songplay database 
+    Input: 
+    cur - psycopg2.extensions.cursor
+    filepath - String, Filepath of song file
+    
+    Output:
+    None - Certain data from song file poured into pointed tables
+    """
+    
+    
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -22,6 +34,17 @@ def process_song_file(cur, filepath):
 
 
 def process_log_file(cur, filepath):
+    
+    """
+    Description: Extract log file data and insert into time, users and songplays tables in songplay database 
+    Input: 
+    cur - psycopg2.extensions.cursor
+    filepath - String, Filepath of song file
+    
+    Output:
+    None - Certain data from log file poured into pointed tables
+    """
+    
     # open log file
     df = pd.read_json(filepath, lines=True)
 
@@ -65,6 +88,19 @@ def process_log_file(cur, filepath):
 
 
 def process_data(cur, conn, filepath, func):
+    
+    """
+    Description: generate certain json file path in song_data or log_date used for process_song_file() or process_log_file(), then call that corresponding function  
+    Input: 
+    cur - psycopg2.extensions.cursor
+    conn - psycopg2.extensions.connection
+    filepath - String, Filepath of song data file or log data file
+    func - Python function, either process_song_file or process_log_file 
+    
+    Output:
+    None - Execute function process_song_file() or process_log_file()
+    """
+    
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
