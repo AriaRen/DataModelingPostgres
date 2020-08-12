@@ -13,12 +13,12 @@ def process_song_file(cur, filepath):
     # insert song record
     song_data = df[["song_id","title", "artist_id","year", "duration"]].values.tolist()[0]
     cur.execute(("INSERT INTO songs (song_id, title, artist_id, year, duration) \
-                 VALUES (%s, %s, %s, %s, %s)"), song_data)
+                 VALUES (%s, %s, %s, %s, %s) ON CONFLICT (song_id) DO NOTHING"), song_data)
     
     # insert artist record
     artist_data = df[["artist_id","artist_name", "artist_location","artist_latitude", "artist_longitude"]].values.tolist()[0]
     cur.execute(("INSERT INTO artists (artist_id, name, location, latitude, longitude) \
-                 VALUES (%s, %s, %s, %s, %s)"), artist_data)
+                 VALUES (%s, %s, %s, %s, %s) ON CONFLICT (artist_id) DO NOTHING"), artist_data)
 
 
 def process_log_file(cur, filepath):
@@ -36,7 +36,7 @@ def process_log_file(cur, filepath):
 
     for i, row in time_df.iterrows():
         cur.execute("INSERT INTO time (start_time, hour, day, week, month, year, weekday) \
-                 VALUES (%s, %s, %s, %s, %s, %s, %s)", list(row))
+                 VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (start_time) DO NOTHING", list(row))
 
     # load user table
     user_df = df[['userId','firstName','lastName','gender','level']]
@@ -44,7 +44,7 @@ def process_log_file(cur, filepath):
     # insert user records
     for i, row in user_df.iterrows():
         cur.execute("INSERT INTO users (user_id, first_name, last_name, gender, level) \
-                 VALUES (%s, %s, %s, %s, %s)", row)
+                 VALUES (%s, %s, %s, %s, %s) ON CONFLICT (user_id) DO UPDATE SET level='paid'", row)
 
     # insert songplay records
     for index, row in df.iterrows():
